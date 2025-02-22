@@ -8,11 +8,12 @@ const Header = ({ header }) => {
   );
 };
 
-const BookContent = ({ books, name, description }) => {
+const BookContent = ({ name, description }) => {
   return (
     <>
+      {/* <button>{text}</button>
       <h2>Books</h2>
-      {books.map((book) => (
+      {bookToShow.map((book) => (
         <div key={book.id}>
           <p>
             {" "}
@@ -23,7 +24,14 @@ const BookContent = ({ books, name, description }) => {
           </p>
           <hr />
         </div>
-      ))}
+      ))} */}
+      <div>
+        <p>
+          <strong>{name}</strong>
+        </p>
+        <p>{description}</p>
+        <hr />
+      </div>
     </>
   );
 };
@@ -42,20 +50,39 @@ function App() {
       id: 1,
       name: "How Nation Fails",
       description: "the book talks about how naton fails",
+      favorite: true,
     },
     {
       id: 2,
       name: "Sapiens",
       description: "history of humans from ancient to modern",
+      favorite: false,
     },
     {
       id: 3,
       name: "Django for API",
       description: "talks about how to use django with REST API...",
+      favorite: true,
     },
   ]);
+  // const [newBook, setNewBook] = useState('')
   const [nameInput, setNameInput] = useState("");
   const [descInput, setDescInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [showAll, setShowAll] = useState(true);
+
+  const bookToShow = showAll
+    ? books
+    : books.filter((book) => book.favorite === true);
+
+  const handelSearch = () => {
+    const newbook = setSearch
+      ? books.filter((book) => book.name).includes(search)
+      : books;
+    setBooks(newbook);
+  };
+
+  console.log(handelSearch);
 
   const handelNameInputChange = (event) => {
     console.log(event.target.value);
@@ -70,18 +97,23 @@ function App() {
   const addBook = (event) => {
     event.preventDefault();
     const book = {
-      id: books.length + 1,
+      id: String(books.length + 1),
       name: nameInput,
       description: descInput,
+      favorite: Math.random() < 0.5,
     };
 
     setBooks(books.concat(book));
     setNameInput("");
     setDescInput("");
   };
+
+  const handelShowButton = () => {};
+
   return (
     <>
       <Header header="PAPER-POP" />
+      Search : <input />
       <form onSubmit={addBook}>
         Name: <input value={nameInput} onChange={handelNameInputChange} />{" "}
         <br /> <br />
@@ -90,8 +122,22 @@ function App() {
         <br /> <br />
         <button>Create Book</button>
       </form>
-
-      <BookContent books={books} name="Name" description="Description" />
+      {/* <BookContent
+        bookToShow={bookToShow}
+        name="Name"
+        description="Description"
+      /> */}
+      <h2>Books</h2>
+      <button onClick={() => setShowAll(!showAll)}>
+        {showAll ? "Important" : "All"}
+      </button>
+      {bookToShow.map((book) => (
+        <BookContent
+          key={book.id}
+          name={book.name}
+          description={book.description}
+        />
+      ))}
       <Footer footer="2025 - All right reserved" />
     </>
   );
