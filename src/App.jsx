@@ -8,30 +8,56 @@ const Header = ({ header }) => {
   );
 };
 
-const BookContent = ({ favorite, name, description }) => {
+const BookForm = ({
+  addBook,
+  nameInput,
+  handelNameInputChange,
+  descInput,
+  handelDescInputChange,
+}) => {
+  return (
+    <>
+      <form onSubmit={addBook}>
+        Name: <input value={nameInput} onChange={handelNameInputChange} />{" "}
+        <br /> <br />
+        Description :{" "}
+        <textarea value={descInput} onChange={handelDescInputChange} />
+        <br /> <br />
+        <button>Create Book</button>
+      </form>
+    </>
+  );
+};
+
+const FilterSearch = ({ search, handelSearchChange }) => {
+  return (
+    <>
+      Search : <input value={search} onChange={handelSearchChange} />
+    </>
+  );
+};
+
+const HeroThing = ({ title, setShowAll, showAll }) => {
+  return (
+    <>
+      <h2>{title}</h2>
+      <button onClick={() => setShowAll(!showAll)}>
+        {showAll ? "Show Favorite" : "Show All"}
+      </button>
+    </>
+  );
+};
+
+const BookContent = ({ favorite, name, description, toggleFavoriteOf }) => {
   const label = favorite ? "make unfavorite" : "make favorite";
   return (
     <>
-      {/* <button>{text}</button>
-      <h2>Books</h2>
-      {bookToShow.map((book) => (
-        <div key={book.id}>
-          <p>
-            {" "}
-            <strong>{name}</strong>: {book.name}
-          </p>
-          <p>
-            <strong>{description}</strong>: {book.description}
-          </p>
-          <hr />
-        </div>
-      ))} */}
       <div>
         <p>
           <strong>{name}</strong>
         </p>
         <p>{description}</p>
-        <button>{label}</button>
+        <button onClick={toggleFavoriteOf}>{label}</button>
         <hr />
       </div>
     </>
@@ -67,7 +93,7 @@ function App() {
       favorite: true,
     },
   ]);
-  // const [newBook, setNewBook] = useState('')
+
   const [nameInput, setNameInput] = useState("");
   const [descInput, setDescInput] = useState("");
   const [search, setSearch] = useState("");
@@ -97,6 +123,12 @@ function App() {
     setDescInput(event.target.value);
   };
 
+  const toggleFavoriteOf = (id) => {
+    const book = books.find((book) => book.id === id);
+    const changedBook = { ...book, favorite: !book.favorite };
+    setBooks(books.map((book) => (book.id !== id ? book : changedBook)));
+  };
+
   const addBook = (event) => {
     event.preventDefault();
     const book = {
@@ -111,37 +143,26 @@ function App() {
     setDescInput("");
   };
 
-  // const handelShowButton = () => {
-  //   setShowAll(!showAll);
-  // };
-
   return (
     <>
       <Header header="PAPER-POP" />
-      Search : <input value={search} onChange={handelSearchChange} />
-      <form onSubmit={addBook}>
-        Name: <input value={nameInput} onChange={handelNameInputChange} />{" "}
-        <br /> <br />
-        Description :{" "}
-        <textarea value={descInput} onChange={handelDescInputChange} />
-        <br /> <br />
-        <button>Create Book</button>
-      </form>
-      {/* <BookContent
-        bookToShow={bookToShow}
-        name="Name"
-        description="Description"
-      /> */}
-      <h2>Books</h2>
-      <button onClick={() => setShowAll(!showAll)}>
-        {showAll ? "Show Favorite" : "Show All"}
-      </button>
+      <FilterSearch search={search} handelSearchChange={handelSearchChange} />
+      <BookForm
+        addBook={addBook}
+        nameInput={nameInput}
+        handelNameInputChange={handelNameInputChange}
+        descInput={descInput}
+        handelDescInputChange={handelDescInputChange}
+      />
+
+      <HeroThing title="Books" setShowAll={setShowAll} showAll={showAll} />
       {filteredBook.map((book) => (
         <BookContent
           key={book.id}
           name={book.name}
           description={book.description}
           favorite={book.favorite}
+          toggleFavoriteOf={() => toggleFavoriteOf(book.id)}
         />
       ))}
       <Footer footer="2025 - All right reserved" />
