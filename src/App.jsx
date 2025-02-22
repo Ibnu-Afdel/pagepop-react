@@ -23,7 +23,7 @@ const BookForm = ({
         Description :{" "}
         <textarea value={descInput} onChange={handleDescInputChange} />
         <br /> <br />
-        <button>Create Book</button>
+        <button>Save</button>
       </form>
     </>
   );
@@ -54,6 +54,7 @@ const BookContent = ({
   description,
   toggleFavoriteOf,
   handelBookDelete,
+  handelBookEdit,
 }) => {
   const label = favorite ? "make unfavorite" : "make favorite";
   return (
@@ -65,6 +66,7 @@ const BookContent = ({
         <p>{description}</p>
         <button onClick={toggleFavoriteOf}>{label}</button>
         <button onClick={handelBookDelete}>Delete</button>
+        <button onClick={handelBookEdit}>Edit</button>
         <hr />
       </div>
     </>
@@ -105,6 +107,7 @@ function App() {
   const [descInput, setDescInput] = useState("");
   const [search, setSearch] = useState("");
   const [showAll, setShowAll] = useState(true);
+  const [editingId, setEditingId] = useState("");
 
   // a way to combine the below 2 constants
   // const filteredBook = books.filter((book) => {
@@ -147,20 +150,39 @@ function App() {
 
   const addBook = (event) => {
     event.preventDefault();
-    const book = {
-      id: String(books.length + 1),
-      name: nameInput,
-      description: descInput,
-      favorite: Math.random() < 0.5,
-    };
+    if (editingId !== "") {
+      setBooks(
+        books.map((book) =>
+          book.id === editingId
+            ? { ...book, name: nameInput, description: descInput }
+            : book
+        )
+      );
+      setEditingId("");
+    } else {
+      const newBook = {
+        id: String(books.length + 1),
+        name: nameInput,
+        description: descInput,
+        favorite: Math.random() < 0.5,
+      };
 
-    setBooks(books.concat(book));
+      setBooks(books.concat(newBook));
+    }
     setNameInput("");
     setDescInput("");
   };
 
   const handelBookDelete = (id) => {
     setBooks(books.filter((book) => book.id !== id));
+  };
+
+  const handelBookEdit = (id) => {
+    const book = books.find((book) => book.id === id);
+    if (!book) return;
+    setEditingId(id);
+    setNameInput(book.name);
+    setDescInput(book.description);
   };
 
   return (
@@ -184,6 +206,7 @@ function App() {
           favorite={book.favorite}
           toggleFavoriteOf={() => toggleFavoriteOf(book.id)}
           handelBookDelete={() => handelBookDelete(book.id)}
+          handelBookEdit={() => handelBookEdit(book.id)}
         />
       ))}
       <Footer footer="2025 - All right reserved" />
