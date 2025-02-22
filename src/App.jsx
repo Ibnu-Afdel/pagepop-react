@@ -8,7 +8,8 @@ const Header = ({ header }) => {
   );
 };
 
-const BookContent = ({ name, description }) => {
+const BookContent = ({ favorite, name, description }) => {
+  const label = favorite ? "make unfavorite" : "make favorite";
   return (
     <>
       {/* <button>{text}</button>
@@ -30,6 +31,7 @@ const BookContent = ({ name, description }) => {
           <strong>{name}</strong>
         </p>
         <p>{description}</p>
+        <button>{label}</button>
         <hr />
       </div>
     </>
@@ -75,14 +77,15 @@ function App() {
     ? books
     : books.filter((book) => book.favorite === true);
 
-  const handelSearch = () => {
-    const newbook = setSearch
-      ? books.filter((book) => book.name).includes(search)
-      : books;
-    setBooks(newbook);
-  };
+  const filteredBook = search
+    ? bookToShow.filter((book) =>
+        book.name.toLocaleLowerCase().includes(search.toLowerCase())
+      )
+    : bookToShow;
 
-  console.log(handelSearch);
+  const handelSearchChange = (event) => {
+    setSearch(event.target.value);
+  };
 
   const handelNameInputChange = (event) => {
     console.log(event.target.value);
@@ -108,12 +111,14 @@ function App() {
     setDescInput("");
   };
 
-  const handelShowButton = () => {};
+  // const handelShowButton = () => {
+  //   setShowAll(!showAll);
+  // };
 
   return (
     <>
       <Header header="PAPER-POP" />
-      Search : <input />
+      Search : <input value={search} onChange={handelSearchChange} />
       <form onSubmit={addBook}>
         Name: <input value={nameInput} onChange={handelNameInputChange} />{" "}
         <br /> <br />
@@ -129,13 +134,14 @@ function App() {
       /> */}
       <h2>Books</h2>
       <button onClick={() => setShowAll(!showAll)}>
-        {showAll ? "Important" : "All"}
+        {showAll ? "Show Favorite" : "Show All"}
       </button>
-      {bookToShow.map((book) => (
+      {filteredBook.map((book) => (
         <BookContent
           key={book.id}
           name={book.name}
           description={book.description}
+          favorite={book.favorite}
         />
       ))}
       <Footer footer="2025 - All right reserved" />
