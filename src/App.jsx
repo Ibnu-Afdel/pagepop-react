@@ -48,7 +48,13 @@ const HeroThing = ({ title, setShowAll, showAll }) => {
   );
 };
 
-const BookContent = ({ favorite, name, description, toggleFavoriteOf }) => {
+const BookContent = ({
+  favorite,
+  name,
+  description,
+  toggleFavoriteOf,
+  handelBookDelete,
+}) => {
   const label = favorite ? "make unfavorite" : "make favorite";
   return (
     <>
@@ -58,6 +64,7 @@ const BookContent = ({ favorite, name, description, toggleFavoriteOf }) => {
         </p>
         <p>{description}</p>
         <button onClick={toggleFavoriteOf}>{label}</button>
+        <button onClick={handelBookDelete}>Delete</button>
         <hr />
       </div>
     </>
@@ -152,6 +159,10 @@ function App() {
     setDescInput("");
   };
 
+  const handelBookDelete = (id) => {
+    setBooks(books.filter((book) => book.id !== id));
+  };
+
   return (
     <>
       <Header header="PAPER-POP" />
@@ -172,6 +183,7 @@ function App() {
           description={book.description}
           favorite={book.favorite}
           toggleFavoriteOf={() => toggleFavoriteOf(book.id)}
+          handelBookDelete={() => handelBookDelete(book.id)}
         />
       ))}
       <Footer footer="2025 - All right reserved" />
