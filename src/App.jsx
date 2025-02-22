@@ -18,10 +18,11 @@ const BookForm = ({
   return (
     <>
       <form onSubmit={addBook}>
-        Name: <input value={nameInput} onChange={handleNameInputChange} />{" "}
+        Name:{" "}
+        <input value={nameInput} onChange={handleNameInputChange} required />{" "}
         <br /> <br />
         Description :{" "}
-        <textarea value={descInput} onChange={handleDescInputChange} />
+        <textarea value={descInput} onChange={handleDescInputChange} required />
         <br /> <br />
         <button>Save</button>
       </form>
