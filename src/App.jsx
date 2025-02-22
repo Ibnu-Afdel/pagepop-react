@@ -11,17 +11,17 @@ const Header = ({ header }) => {
 const BookForm = ({
   addBook,
   nameInput,
-  handelNameInputChange,
+  handleNameInputChange,
   descInput,
-  handelDescInputChange,
+  handleDescInputChange,
 }) => {
   return (
     <>
       <form onSubmit={addBook}>
-        Name: <input value={nameInput} onChange={handelNameInputChange} />{" "}
+        Name: <input value={nameInput} onChange={handleNameInputChange} />{" "}
         <br /> <br />
         Description :{" "}
-        <textarea value={descInput} onChange={handelDescInputChange} />
+        <textarea value={descInput} onChange={handleDescInputChange} />
         <br /> <br />
         <button>Create Book</button>
       </form>
@@ -29,10 +29,10 @@ const BookForm = ({
   );
 };
 
-const FilterSearch = ({ search, handelSearchChange }) => {
+const FilterSearch = ({ search, handleSearchChange }) => {
   return (
     <>
-      Search : <input value={search} onChange={handelSearchChange} />
+      Search : <input value={search} onChange={handleSearchChange} />
     </>
   );
 };
@@ -75,19 +75,19 @@ const Footer = ({ footer }) => {
 function App() {
   const [books, setBooks] = useState([
     {
-      id: 1,
+      id: "1",
       name: "How Nation Fails",
       description: "the book talks about how naton fails",
       favorite: true,
     },
     {
-      id: 2,
+      id: "2",
       name: "Sapiens",
       description: "history of humans from ancient to modern",
       favorite: false,
     },
     {
-      id: 3,
+      id: "3",
       name: "Django for API",
       description: "talks about how to use django with REST API...",
       favorite: true,
@@ -99,6 +99,13 @@ function App() {
   const [search, setSearch] = useState("");
   const [showAll, setShowAll] = useState(true);
 
+  // a way to combine the below 2 constants
+  // const filteredBook = books.filter((book) => {
+  //   const matchesFavorite = showAll || book.favorite;
+  //   const matchesSearch = book.name.toLowerCase().includes(search.toLowerCase());
+  //   return matchesFavorite && matchesSearch;
+  // });
+
   const bookToShow = showAll
     ? books
     : books.filter((book) => book.favorite === true);
@@ -109,24 +116,26 @@ function App() {
       )
     : bookToShow;
 
-  const handelSearchChange = (event) => {
+  const handleSearchChange = (event) => {
     setSearch(event.target.value);
   };
 
-  const handelNameInputChange = (event) => {
+  const handleNameInputChange = (event) => {
     console.log(event.target.value);
     setNameInput(event.target.value);
   };
 
-  const handelDescInputChange = (event) => {
+  const handleDescInputChange = (event) => {
     console.log(event.target.value);
     setDescInput(event.target.value);
   };
 
   const toggleFavoriteOf = (id) => {
-    const book = books.find((book) => book.id === id);
-    const changedBook = { ...book, favorite: !book.favorite };
-    setBooks(books.map((book) => (book.id !== id ? book : changedBook)));
+    setBooks(
+      books.map((book) =>
+        book.id === id ? { ...book, favorite: !book.favorite } : book
+      )
+    );
   };
 
   const addBook = (event) => {
@@ -146,13 +155,13 @@ function App() {
   return (
     <>
       <Header header="PAPER-POP" />
-      <FilterSearch search={search} handelSearchChange={handelSearchChange} />
+      <FilterSearch search={search} handleSearchChange={handleSearchChange} />
       <BookForm
         addBook={addBook}
         nameInput={nameInput}
-        handelNameInputChange={handelNameInputChange}
+        handleNameInputChange={handleNameInputChange}
         descInput={descInput}
-        handelDescInputChange={handelDescInputChange}
+        handleDescInputChange={handleDescInputChange}
       />
 
       <HeroThing title="Books" setShowAll={setShowAll} showAll={showAll} />
