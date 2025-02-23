@@ -110,20 +110,13 @@ function App() {
   const [showAll, setShowAll] = useState(true);
   const [editingId, setEditingId] = useState("");
 
-  // a way to combine the below 2 constants
-  // const filteredBook = books.filter((book) => {
-  //   const matchesFavorite = showAll || book.favorite;
-  //   const matchesSearch = book.name.toLowerCase().includes(search.toLowerCase());
-  //   return matchesFavorite && matchesSearch;
-  // });
-
   const bookToShow = showAll
     ? books
     : books.filter((book) => book.favorite === true);
 
   const filteredBook = search
     ? bookToShow.filter((book) =>
-        book.name.toLocaleLowerCase().includes(search.toLowerCase())
+        book.name.toLocaleLowerCase().includes(search.toLowerCase()),
       )
     : bookToShow;
 
@@ -144,8 +137,8 @@ function App() {
   const toggleFavoriteOf = (id) => {
     setBooks(
       books.map((book) =>
-        book.id === id ? { ...book, favorite: !book.favorite } : book
-      )
+        book.id === id ? { ...book, favorite: !book.favorite } : book,
+      ),
     );
   };
 
@@ -156,8 +149,8 @@ function App() {
         books.map((book) =>
           book.id === editingId
             ? { ...book, name: nameInput, description: descInput }
-            : book
-        )
+            : book,
+        ),
       );
       setEditingId("");
     } else {
